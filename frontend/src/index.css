@@ -1,0 +1,26 @@
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-blue: #38bdf8;
+  --accent-green: #22c55e;
+  --accent-yellow: #eab308;
+  --accent-red: #ef4444;
+  --border-color: #475569;
+  --radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  min-height: 100vh;
+}
