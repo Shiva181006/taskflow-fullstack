@@ -1,28 +1,24 @@
-const Database = require('better-sqlite3');
-const path = require('path');
-const fs = require('fs');
+const ALLOWED_PRIORITIES = ['Low', 'Medium', 'High'];
 
 /**
  * Idempotent seed function. Inserts initial board, columns, and tasks if database is empty.
  * @param {import('better-sqlite3').Database} db
  */
 function seedDatabase(db) {
-  // Ensure foreign keys are ON
   db.pragma('foreign_keys = ON');
 
-  // Check if any board exists
+  // Ensure default board exists
   const existingBoard = db.prepare('SELECT id FROM boards LIMIT 1').get();
   let boardId;
 
   if (!existingBoard) {
-    const insertBoard = db.prepare('INSERT INTO boards (name) VALUES (?)');
-    const result = insertBoard.run('TaskFlow Board');
+    const result = db.prepare('INSERT INTO boards (name) VALUES (?)').run('TaskFlow Board');
     boardId = result.lastInsertRowid;
   } else {
     boardId = existingBoard.id;
   }
 
-  // Check if columns exist for this board
+  // Ensure columns exist for this board
   const existingColumnsCount = db
     .prepare('SELECT COUNT(*) as count FROM columns WHERE board_id = ?')
     .get(boardId).count;
@@ -36,7 +32,7 @@ function seedDatabase(db) {
     const inProgressCol = insertColumn.run(boardId, 'In Progress', 2);
     const doneCol = insertColumn.run(boardId, 'Done', 3);
 
-    // Check if tasks exist
+    // Ensure initial tasks exist
     const existingTasksCount = db
       .prepare('SELECT COUNT(*) as count FROM tasks')
       .get().count;
@@ -88,21 +84,6 @@ function seedDatabase(db) {
       seedTransaction(tasksToInsert);
     }
   }
-}
-
-// Allow direct execution via command line: node src/db/seed.js
-if (require.main === module) {
-  const dbPath = process.env.DB_PATH || path.join(__dirname, '../../../database.sqlite');
-  const db = new Database(dbPath);
-  
-  // Apply schema first if running standalone
-  const schemaPath = path.join(__dirname, 'schema.sql');
-  const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-  db.exec(schemaSql);
-  
-  seedDatabase(db);
-  db.close();
-  console.log('[Seed] Standalone seed script finished successfully.');
 }
 
 module.exports = { seedDatabase };
