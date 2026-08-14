@@ -30,26 +30,30 @@ TaskFlow is a full-stack Kanban task management board built with **React 18**, *
 TaskFlow/
 ├── backend/
 │   ├── src/
-│   │   ├── app.js             # Express app setup & middleware
-│   │   ├── server.js          # HTTP server listener
-│   │   ├── controllers/       # Route request handlers
-│   │   ├── db/                # Database connection, schema, seed & queries
-│   │   │   ├── database.js    # SQLite db initialization & PRAGMA setup
-│   │   │   ├── schema.sql     # DDL table creation scripts
-│   │   │   ├── seed.js        # Initial board & column seed data
-│   │   │   └── queries.js     # Prepared SQL queries module
-│   │   ├── middleware/        # Request validation & error handling
-│   │   └── routes/            # REST API route definitions
-│   ├── tests/                 # Jest & Supertest integration tests
+│   │   ├── app.js             # Express application & route handlers
+│   │   ├── db.js              # Database connection, prepared SQL queries & DAO
+│   │   ├── schema.sql         # DDL table creation scripts & foreign keys
+│   │   ├── seed.js            # Initial board, column & task seed data
+│   │   └── server.js          # HTTP server listener entry point
+│   ├── tests/
+│   │   ├── database.test.js   # SQL query layer integration tests
+│   │   └── task.test.js       # Express REST API & validation tests
 │   └── package.json
 │
 ├── frontend/
 │   ├── src/
-│   │   ├── components/        # UI components (Board, Column, TaskCard, TaskForm, EditModal, FilterBar)
-│   │   ├── services/          # API fetch wrapper
-│   │   ├── App.jsx            # Main stateful application component
+│   │   ├── components/
+│   │   │   ├── Board.jsx          # Board grid component
+│   │   │   ├── Column.jsx         # Column container component
+│   │   │   ├── EditTaskModal.jsx  # Task editing modal dialog
+│   │   │   ├── TaskCard.jsx       # Individual task item card
+│   │   │   └── TaskForm.jsx       # New task creation form component
+│   │   ├── api.js             # Fetch API wrapper
+│   │   ├── App.jsx            # Stateful main application
 │   │   ├── main.jsx           # React DOM entry point
-│   │   └── index.css          # Global styling & CSS theme variables
+│   │   └── index.css          # Design system & CSS theme variables
+│   ├── index.html
+│   ├── vite.config.js         # Vite bundler & API proxy configuration
 │   └── package.json
 │
 └── README.md
@@ -76,7 +80,6 @@ TaskFlow/
 
 | Method | Endpoint | Description | Expected Status |
 |---|---|---|---|
-| `GET` | `/api/health` | API health check | `200 OK` |
 | `GET` | `/api/boards/:boardId` | Fetch board with nested columns & tasks | `200 OK` / `404` |
 | `POST` | `/api/tasks` | Create a new task | `201 Created` / `400` |
 | `PUT` | `/api/tasks/:id` | Update task title, description, priority | `200 OK` / `400` / `404` |
@@ -114,11 +117,12 @@ npm test
 
 ---
 
-## 📝 Assumptions & Trade-offs
+## ⏱️ Development Metadata & Assumptions
 
-1. **Single Board Scope**: The frontend currently targets Board ID `1` by default, focusing on core Kanban board functionality without multi-board switching UI.
-2. **Client-side Filtering**: Priority filtering is performed on the frontend task state to prevent unnecessary network roundtrips during interactive filter changes.
-3. **Better-SQLite3 synchronous execution**: Simplifies asynchronous flow control and prevents database locking issues while preserving performance.
+* **Approximate Development Time**: ~5 Hours
+* **Single Board Scope**: The frontend targets Board ID `1` by default, focusing on core Kanban board functionality without multi-board switching UI overhead.
+* **Client-side Filtering**: Priority filtering is performed on the frontend task state to prevent unnecessary network roundtrips during interactive filter changes.
+* **Better-SQLite3 synchronous execution**: Simplifies asynchronous flow control and prevents database locking issues while preserving performance.
 
 ---
 
@@ -129,3 +133,4 @@ If given more development time, the following features could be added:
 * Search bar for filtering tasks by title/description keywords.
 * Subtasks / checklist items within individual task cards.
 * Dark/Light mode theme toggle in the header navigation bar.
+
