@@ -9,10 +9,19 @@ const {
   moveTask,
 } = require('./db');
 
+const path = require('path');
+const fs = require('fs');
+
 const app = express();
 app.use(express.json());
 
 const ALLOWED_PRIORITIES = ['Low', 'Medium', 'High'];
+
+// Serve production static assets if frontend/dist exists
+const frontendDistPath = path.join(__dirname, '../../frontend/dist');
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+}
 
 // GET /api/boards/:boardId - Retrieve board with nested columns & tasks
 app.get('/api/boards/:boardId', (req, res, next) => {
@@ -156,6 +165,14 @@ app.patch('/api/tasks/:id/move', (req, res, next) => {
     next(err);
   }
 });
+
+// Production Single-Page-App fallback route
+if (fs.existsSync(frontendDistPath)) {
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+}
 
 // Global Centralized Error Handling Middleware
 app.use((err, req, res, next) => {

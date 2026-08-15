@@ -4,7 +4,7 @@ const fs = require('fs');
 const TEST_DB_PATH = path.join(__dirname, '../test.sqlite');
 process.env.DB_PATH = TEST_DB_PATH;
 
-const { db, getTaskCountPerColumn } = require('../src/db');
+const { db, getTaskCountPerColumn, getTasksByPriority } = require('../src/db');
 
 describe('Database Layer Tests', () => {
 
@@ -43,6 +43,30 @@ describe('Database Layer Tests', () => {
     expect(todoCol.task_count).toBe(2);
     expect(inProgressCol.task_count).toBe(2);
     expect(doneCol.task_count).toBe(1);
+  });
+
+  // TEST 4 — TASKS BY PRIORITY SQL QUERY LAYER TEST
+  test('Test 4: getTasksByPriority executes raw SQL query with WHERE and ORDER BY (newest first)', () => {
+    const highPriorityTasks = getTasksByPriority(db, 'High');
+
+    expect(Array.isArray(highPriorityTasks)).toBe(true);
+    expect(highPriorityTasks.length).toBeGreaterThan(0);
+    highPriorityTasks.forEach((task) => {
+      expect(task.priority).toBe('High');
+    });
+
+    // Verify ordering: newest first (created_at DESC)
+    for (let i = 0; i < highPriorityTasks.length - 1; i++) {
+      const current = new Date(highPriorityTasks[i].created_at).getTime();
+      const next = new Date(highPriorityTasks[i + 1].created_at).getTime();
+      expect(current).toBeGreaterThanOrEqual(next);
+    }
+
+    const lowPriorityTasks = getTasksByPriority(db, 'Low');
+    expect(Array.isArray(lowPriorityTasks)).toBe(true);
+    lowPriorityTasks.forEach((task) => {
+      expect(task.priority).toBe('Low');
+    });
   });
 
 });

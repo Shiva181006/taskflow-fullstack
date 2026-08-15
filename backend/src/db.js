@@ -5,6 +5,10 @@ const { seedDatabase } = require("./seed");
 
 const dbPath =
   process.env.DB_PATH || path.join(__dirname, "../../database.sqlite");
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
 const db = new Database(dbPath);
 
 // Enable foreign key constraints in SQLite

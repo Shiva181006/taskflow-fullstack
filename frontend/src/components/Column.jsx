@@ -7,7 +7,7 @@ function Column({ column, allColumns, selectedPriority, onEditTask, onDeleteTask
     ? tasks
     : tasks.filter((t) => t.priority === selectedPriority);
 
-  const displayCount = column.task_count ?? tasks.length;
+  const displayCount = visibleTasks.length;
 
   return (
     <div className="board-column">
