@@ -1,4 +1,4 @@
-��# TaskFlow — Lightweight Task Board Application
+# TaskFlow — Lightweight Task Board Application
 
 TaskFlow is a full-stack task management board built with **React 18**, **Node.js/Express**, and **SQLite**. It allows small teams to organize tasks across standard workflow columns (**To Do**, **In Progress**, **Done**).
 
@@ -91,7 +91,7 @@ TaskFlow/
 ## ⚡ Setup & Installation
 
 ### Prerequisites
-* **Node.js** (v18.0.0 or higher& **npm**)
+* **Node.js** (v18.0.0 or higher) & **npm**
 
 ### 1. Backend Setup
 ```bash
@@ -111,40 +111,9 @@ The Vite development server will launch on `http://localhost:5173`.
 
 ### 3. Running Integration Tests
 ```bash
+cd backend
 npm test
 ```
-
----
-
-## ☁️ Free Cloud Deployment Guide (Zero Cost & Data Persistence)
-
-TaskFlow is pre-configured for **unified single-service deployment**, where Express automatically serves the built React frontend from `frontend/dist`.
-
-### Option 1: Render.com (100% Free Web Service — Recommended)
-1. Push code to your **GitHub** repository.
-2. Log in to [Render.com](https://render.com) and click **New +** -> **Web Service**.
-3. Connect your GitHub repository.
-4. Set the following build configuration:
-   * **Runtime**: `Node`
-   * **Build Command**: `npm run build`
-   * **Start Command**: `npm start`
-5. Click **Create Web Service**. Render will automatically build the React application and start the backend.
-
-### Option 2: Fly.io (100% Free Tier with Persistent SQLite Storage Volume)
-For guaranteed permanent database storage across all restarts and redeploys:
-1. Install [Fly CLI](https://fly.io/docs/hands-on/install-flyctl/) and log in: `fly auth login`.
-2. Run `fly launch` in the root folder.
-3. Create a free persistent volume for SQLite:
-   ```bash
-   fly volumes create taskflow_db --size 1
-   ```
-4. Mount the volume in your generated `fly.toml`:
-   ```toml
-   [mounts]
-     source = "taskflow_db"
-     destination = "/app/data"
-   ```
-5. Deploy: `fly deploy`.
 
 ---
 
@@ -159,16 +128,14 @@ For guaranteed permanent database storage across all restarts and redeploys:
 
 ## 💡 What I Learned & Found Interesting
 
-* **Synchronous SQLite Performance & Simplicity**: Working with `better-sqlite3` in Node.js was a refreshing experience. Unlike asynchronous drivers (like `sqlite3` or ORMs with heavy async promise chains), `better-sqlite3` executes statements synchronously in C++. This eliminated race conditions during relational table bootstrapping and seeding, while still executing complex analytical SQL queries (such as `LEFT JOIN` combined with `GROUP BY` to aggregate task counts across columnscleanly and rapidly.
+* **Synchronous SQLite Performance & Simplicity**: Working with `better-sqlite3` in Node.js was a refreshing experience. Unlike asynchronous drivers (like `sqlite3` or ORMs with heavy async promise chains), `better-sqlite3` executes statements synchronously in C++. This eliminated race conditions during relational table bootstrapping and seeding, while still executing complex analytical SQL queries (such as `LEFT JOIN` combined with `GROUP BY` to aggregate task counts across columns) cleanly and rapidly.
 
 ---
 
 ## 🔮 Future Improvements
 
 If given more development time, the following features could be added:
-* **Drag-and-Drop Column Reordering**: Interactive drag-and-drop task movement across columns using `@hello-pangea/dnd`.
+* **Drag-and-Drop Task Movement**: Interactive drag-and-drop task movement across columns using `@hello-pangea/dnd`.
 * **Keyword Search & Filter**: Text input search for quickly filtering tasks by title or description content.
 * **Subtasks & Checklists**: Checklist items inside task cards to track sub-steps toward task completion.
 * **Theme Switching**: Dark/Light mode toggle in top application bar.
-
-
